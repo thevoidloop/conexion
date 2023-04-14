@@ -1,38 +1,27 @@
+import 'package:conexion/app/routes/routes.dart';
+import 'package:conexion/app/theme/app_theme.dart';
+import 'package:conexion/data/providers/ui_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'pages/loginpage.dart';
+import 'data/providers/database_manager_provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => LoginModel(),
-      child: MaterialApp(
-        home: LoginPage(),
-        theme: ThemeData.light().copyWith(
-          primaryColorLight: Colors.amber.shade300,
-          appBarTheme: AppBarTheme(centerTitle: true,backgroundColor: Colors.amber.shade300,),
-          elevatedButtonTheme:  ElevatedButtonThemeData(style: TextButton.styleFrom(
-            backgroundColor: Colors.black45
-          ))
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => DatabaseManagerProvider(),
         ),
-        debugShowCheckedModeBanner: false,
-      ),
-    ),
-  );
-}
-
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          LoginForm(),
-        ],
+      ], 
+        child: MaterialApp(
+          initialRoute: AppRoutes.login,
+          routes: getRoutes(),
+          theme: getAppTheme(),
+          debugShowCheckedModeBanner: false,
+        ),
       ),
     );
-  }
 }
+
 
