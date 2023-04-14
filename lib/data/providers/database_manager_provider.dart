@@ -1,34 +1,29 @@
 import 'dart:convert';
+import 'package:conexion/app/routes/routes.dart';
+import 'package:conexion/data/models/option_model.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_conn/sql_conn.dart';
-
-import '../../ui/screens/home_screen.dart';
 
 
 class DatabaseManagerProvider extends ChangeNotifier{
 
-  bool _connection = false;
-  String _ip = '10.10.11.6';
-  String _port = '1433';
-  String _databasename = 'proyect';
-  String _username= 'admin';
-  String _password= '123456789';
+  bool connection = false;
+  late int _id;
+  final String _ip = '10.10.11.6';
+  final String _port = '1433';
+  final String _databasename = 'proyect';
+  final String _username= 'admin';
+  final String _password= '123456789';
+  late List<Option> _options;
 
-
-  String get ip => _ip;
-  String get port => _port;
-  String get databasename => _databasename;
-  String get username => _username;
-  String get password => _password;
-  bool get connection => _connection;
+  List<Option> get options => _options;
   
   
   set ip (String val) => _ip;
   set port (String val) => _port;
   set databasename (String val) => _databasename;
   set username (String val) => _username;
-  set password (String val) => _password; 
-  set connection(bool val) => _connection=val;
+  set password (String val) => _password;
 
 
   Future<void> connect() async {
@@ -59,19 +54,18 @@ class DatabaseManagerProvider extends ChangeNotifier{
 
   Future<void> validarUsario(String email, String password, BuildContext context) async {
 
-    var res = await SqlConn.readData('DECLARE @Valid BIT; EXEC ValidarUsuario @correo  = \'$email\', @pass = \'$password\', @Resultado = @Valid OUTPUT; SELECT @Valid AS Result;');
+    var res = await SqlConn.readData('SELECT dbo.ValidateUserGetId(\'$email\', \'$password\') AS Result;');
 
     String jsonString = res.toString();
     List<dynamic> parsedList = jsonDecode(jsonString);
 
     int result = parsedList[0]['Result']; // Accede al valor de la clave "Result"
 
-    if (result==1){
-      // ignore: use_build_context_synchronously
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+    if (result!=0){
+      _id = result;
+      await getOptionsByUserId();
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      debugPrint(_id.toString());
     }else {
       debugPrint('Usuario Invalido');
     }
@@ -81,4 +75,14 @@ class DatabaseManagerProvider extends ChangeNotifier{
     var res = await SqlConn.writeData(query);
     debugPrint(res.toString());
   }
+
+  Future<void> getOptionsByUserId() async {
+    var res = await SqlConn.readData('SELECT * FROM dbo.GetUserOptions($_id);');
+    List<dynamic> jsonResponse = json.decode(res.toString());
+    _options = jsonResponse.map((map) => Option.fromJson(map)).toList();
+    debugPrint(res.toString());
+  }
+
+
+
 }
