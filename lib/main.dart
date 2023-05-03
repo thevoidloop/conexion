@@ -1,6 +1,5 @@
 import 'package:conexion/app/routes/routes.dart';
 import 'package:conexion/app/theme/app_theme.dart';
-import 'package:conexion/data/providers/ui_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

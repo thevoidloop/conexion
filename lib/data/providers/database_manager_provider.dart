@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:conexion/app/routes/routes.dart';
 import 'package:conexion/data/models/option_model.dart';
+import 'package:conexion/data/models/vehicle_model.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_conn/sql_conn.dart';
 
@@ -9,21 +10,22 @@ class DatabaseManagerProvider extends ChangeNotifier{
 
   bool connection = false;
   late int _id;
-  final String _ip = '10.10.11.6';
+  String _ip = '10.10.11.12';
   final String _port = '1433';
   final String _databasename = 'proyect';
   final String _username= 'admin';
   final String _password= '123456789';
   late List<Option> _options;
+  late List<Vehicle> _vehicle;
+  String _valueVehicle = "Seleccione una opcion";
 
   List<Option> get options => _options;
+  List<Vehicle> get vehicle => _vehicle;
+  String get ip => _ip;
+  String get valueVehicle => _valueVehicle;
   
-  
-  set ip (String val) => _ip;
-  set port (String val) => _port;
-  set databasename (String val) => _databasename;
-  set username (String val) => _username;
-  set password (String val) => _password;
+  set ip (String val) => _ip= val;
+  set valueVehicle (String val) => _valueVehicle= val;
 
 
   Future<void> connect() async {
@@ -64,6 +66,7 @@ class DatabaseManagerProvider extends ChangeNotifier{
     if (result!=0){
       _id = result;
       await getOptionsByUserId();
+      await agregarInicioSesion(_id);
       Navigator.pushReplacementNamed(context, AppRoutes.home);
       debugPrint(_id.toString());
     }else {
@@ -80,9 +83,20 @@ class DatabaseManagerProvider extends ChangeNotifier{
     var res = await SqlConn.readData('SELECT * FROM dbo.GetUserOptions($_id);');
     List<dynamic> jsonResponse = json.decode(res.toString());
     _options = jsonResponse.map((map) => Option.fromJson(map)).toList();
+    await getVehicle();
     debugPrint(res.toString());
   }
 
+   Future<void> getVehicle() async {
+    var res = await SqlConn.readData('SELECT * FROM tbVehicle');
+    List<dynamic> vehiclesMapList = json.decode(res.toString());
+    _vehicle = vehiclesMapList.map((map) => Vehicle.fromMap(map)).toList();
+    debugPrint(res.toString());
+  }
 
+  Future<void> agregarInicioSesion(int idUser) async {
+    var res = await SqlConn.writeData('EXEC AgregarInicioSesion @Usuario = $idUser;');
+    debugPrint(res.toString());
+  }
 
 }

@@ -19,8 +19,10 @@ class TextFormFieldNumber extends StatelessWidget {
   Widget build(BuildContext context) {
     
     return TextFormField(
+      controller: controller,
       decoration:  InputDecoration(
         labelText: mensaje
+        
       ),
       keyboardType: TextInputType.number,
     );
@@ -108,4 +110,52 @@ class TextFormFieldText extends StatelessWidget {
       keyboardType: TextInputType.text,
     );
   }
+}
+
+class TextFormFielDate extends StatelessWidget {
+  TextFormFielDate({super.key});
+
+  final TextEditingController _dateController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => UIProvider(),
+      child: Consumer<UIProvider>(
+        builder: (context, ui, child) {
+          return TextFormField(
+            controller: _dateController,
+            decoration: InputDecoration(
+              labelText: 'Selecciona una fecha',
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.calendar_today),
+                onPressed: () => _selectDate(context, ui),
+              ),
+            ),
+            onTap: () {
+              FocusScope.of(context).requestFocus(FocusNode()); // Ocultar el teclado
+              _selectDate(context, ui);
+            },
+            readOnly: true, // Evita que el teclado aparezca al tocar el campo
+          );
+        },
+      ),
+    );
+  }
+    
+
+    Future<void> _selectDate(BuildContext context, UIProvider ui) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: ui.selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != ui.selectedDate) {
+      debugPrint(picked.toString());
+      _dateController.text = "${picked.day}/${picked.month}/${picked.year}";
+      ui.setSelectedDate(picked);
+    }
+  }
+
+
 }

@@ -56,7 +56,7 @@ List<Widget> _buildDrawerItems(BuildContext context) {
       ListTile(
         //leading: Icon(item[]),
         title: Text(item.optionName, style: TextStyle(fontSize: 18),),
-        onTap: () {},
+        onTap: () => Navigator.pushNamed(context, item.optionName),
       ),
     );
   }

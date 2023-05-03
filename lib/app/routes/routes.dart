@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class AppRoutes {
   static const String login = '/login';
   static const String home = '/home';
-  static const String combustible = '/combustible';
+  static const String combustible = 'Combustibles';
   static const String setting = '/setting';
 }
 

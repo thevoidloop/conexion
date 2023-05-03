@@ -9,12 +9,10 @@ class SettingDBScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    final TextEditingController _passwordController = TextEditingController();
-    final TextEditingController _ipController = TextEditingController();
-    final TextEditingController _portController = TextEditingController();
-    final TextEditingController _dbNameController = TextEditingController();
-    final TextEditingController _userController = TextEditingController();
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    TextEditingController ipController = TextEditingController();
+
     
     
     return Scaffold(
@@ -25,13 +23,13 @@ class SettingDBScreen extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(15),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               children: [
                 TextFormFieldNumber(
-                  controller: _ipController,
+                  controller: ipController,
                   mensaje: 'Direccion IP',
-                ),
+                ),/*
                 SizedBox(height: 15,),
                 TextFormFieldNumber(
                   controller: _portController,
@@ -51,16 +49,11 @@ class SettingDBScreen extends StatelessWidget {
                 TextFormFieldPass(
                   controller: _passwordController, 
                   mensaje: 'Contraseña'
-                ),
-                SizedBox(height: 15,),
+                ),*/
+                const SizedBox(height: 15,),
                 _ButtonConexion(
-                  formKey: _formKey, 
-                  dbNameController: _dbNameController, 
-                  ipController: _ipController, 
-                  passwordController: _passwordController, 
-                  portController: _portController, 
-                  userController: _userController,
-
+                  formKey: formKey, 
+                  ipController: ipController, 
                 )
                 
 
@@ -77,11 +70,9 @@ class SettingDBScreen extends StatelessWidget {
 
 class _ButtonConexion extends StatelessWidget {
   
-  final TextEditingController passwordController;
+
   final TextEditingController ipController;
-  final TextEditingController portController;
-  final TextEditingController dbNameController;
-  final TextEditingController userController;
+
   final GlobalKey<FormState> formKey;
   
   
@@ -89,27 +80,20 @@ class _ButtonConexion extends StatelessWidget {
   const _ButtonConexion({
     super.key,
     required this.formKey, 
-    required this.passwordController, 
     required this.ipController, 
-    required this.portController, 
-    required this.dbNameController, 
-    required this.userController,
+
   });
 
 
   @override
   Widget build(BuildContext context) {
     
-    return Consumer<DatabaseManagerProvider> (
+   return Consumer<DatabaseManagerProvider> (
       builder: (context, dbmanager, _) {
         return ElevatedButton(
           onPressed: () async {
             dbmanager.ip = ipController.text;
-            dbmanager.databasename = dbNameController.text;
-            dbmanager.port = portController.text;
-            dbmanager.username = userController.text;
-            dbmanager.password = passwordController.text;
-
+            debugPrint(dbmanager.ip);
             await dbmanager.connect();
           },
       child: const Text('Conectar'),
