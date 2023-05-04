@@ -1,8 +1,5 @@
-import 'package:conexion/data/models/vehicle_model.dart';
-import 'package:conexion/data/providers/database_manager_provider.dart';
 import 'package:conexion/ui/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CombustiblePage extends StatefulWidget {
   const CombustiblePage({super.key});
@@ -26,23 +23,49 @@ class _CombustiblePageState extends State<CombustiblePage> {
 }
 
 class _FormFuelLog extends StatelessWidget {
+  final TextEditingController _numbreValeController = TextEditingController();
+  final TextEditingController _galonesController = TextEditingController();
+  final TextEditingController _kilometrosController = TextEditingController();
+  final TextEditingController _totalController = TextEditingController();
 
-    final TextEditingController _numbreValeController = TextEditingController();
-
-  
   _FormFuelLog({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Form(
+    return Form(
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
-            _DropdownButton(),
-            TextFormFieldNumber(mensaje: 'Numero de vale', controller: _numbreValeController),
-            TextFormFielDate()
+            const DropdownVehicle(),
+            const SizedBox(height: 15),
+            TextFormFieldNumber(
+              mensaje: 'Numero de vale',
+              controller: _numbreValeController,
+            ),
+            const SizedBox(height: 15),
+            TextFormFielDate(),
+            const SizedBox(height: 15),
+            const DropdownCombustible(),
+            const SizedBox(height: 15),
+            TextFormFieldNumber(
+              mensaje: 'Cantidad de galones',
+              controller: _galonesController,
+            ),
+            const SizedBox(height: 15),
+            TextFormFieldNumber(
+              mensaje: 'Kilometráje del vehiculo',
+              controller: _kilometrosController,
+            ),
+            const SizedBox(height: 15),
+            TextFormFieldNumber(
+              mensaje: 'Total del vale',
+              controller: _totalController,
+            ),
+            const SizedBox(height: 40),
+            const _SaveButton()
           ],
         ),
       ),
@@ -50,55 +73,19 @@ class _FormFuelLog extends StatelessWidget {
   }
 }
 
-class _DropdownButton extends StatelessWidget {
-  const _DropdownButton({
+class _SaveButton extends StatelessWidget {
+  const _SaveButton({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DatabaseManagerProvider>(builder: (context, db, child) {
-
-      return DropdownButtonFormField(
-      items: _buildDrawerItems(db.vehicle),
-      value: db.valueVehicle,
-      onChanged: (value) {
-        db.valueVehicle = value;
-      },
-      decoration: const InputDecoration(
-        labelText: 'Selecciona una opción',
-      ),
-    );
-
-    });
-  }
-}
-
-
-
-List<DropdownMenuItem> _buildDrawerItems(List<Vehicle> drawerItems) {
-  
-  List<DropdownMenuItem> items = [];
-
-  items.add(
-      DropdownMenuItem(
-        value: 'Seleccione una opcion',
-        child: Text("Seleccione una opcion", style: TextStyle(fontSize: 18),),
-        onTap: () {},
-      ),
-    );
-  
-  
-  for (var item in drawerItems) {
-    items.add(
-      DropdownMenuItem(
-        value: item.idVehicle.toString(),
-        child: Text("${item.marca} ${item.modelo} - ${item.placa}", style: TextStyle(fontSize: 18),),
-
+    return ElevatedButton(
+      onPressed: () {},
+      child: const Text(
+        'Guardar Registro',
+        style: TextStyle(fontSize: 18),
       ),
     );
   }
-
-  return items;
 }
-

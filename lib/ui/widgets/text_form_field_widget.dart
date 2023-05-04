@@ -1,3 +1,6 @@
+import 'package:conexion/data/models/combustible_model.dart';
+import 'package:conexion/data/models/vehicle_model.dart';
+import 'package:conexion/data/providers/database_manager_provider.dart';
 import 'package:conexion/data/providers/ui_provider.dart';
 import 'package:conexion/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -136,5 +139,105 @@ class TextFormFielDate extends StatelessWidget {
       _dateController.text = "${picked.day}/${picked.month}/${picked.year}";
       ui.setSelectedDate(picked);
     }
+  }
+}
+
+class DropdownVehicle extends StatelessWidget {
+  const DropdownVehicle({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, child) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(db.vehicle),
+        value: db.valueVehicle,
+        onChanged: (value) {
+          debugPrint(value);
+        },
+        decoration: const InputDecoration(
+          labelText: 'Vehiculo',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems(List<Vehicle> drawerItems) {
+    List<DropdownMenuItem> items = [];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 'Seleccione una opcion',
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+
+    for (var item in drawerItems) {
+      items.add(
+        DropdownMenuItem(
+          value: item.idVehicle.toString(),
+          child: Text(
+            "${item.marca} ${item.modelo} - ${item.placa}",
+            style: const TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownCombustible extends StatelessWidget {
+  const DropdownCombustible({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, child) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(db.combustible),
+        value: db.valueCombustible,
+        onChanged: (value) {
+          debugPrint(value);
+        },
+        decoration: const InputDecoration(
+          labelText: 'Tipo de combustible',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems(List<Combustible> drawerItems) {
+    List<DropdownMenuItem> items = [];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 'Seleccione una opcion',
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+
+    for (var item in drawerItems) {
+      items.add(
+        DropdownMenuItem(
+          value: item.idCombustible.toString(),
+          child: Text(
+            item.nombre,
+            style: const TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+    }
+
+    return items;
   }
 }
