@@ -112,4 +112,27 @@ class DatabaseManagerProvider extends ChangeNotifier {
 
     debugPrint(_combustible[0].nombre);
   }
+
+  Future<void> ingresarRegistroCombustible(
+    String vale,
+    String fecha,
+    String galones,
+    String kmVehiculo,
+    String totalVale,
+  ) async {
+    String query = '''DECLARE @insertStatus NVARCHAR(250);
+      EXEC AgregarRegistroCombustible
+          @idUsuario = $_id,
+          @idVehiculo = $_valueVehicle,
+          @idCombustible = $_valueCombustible,
+          @numeroVale = $vale,
+          @fecha = '$fecha',
+          @cantidadGalones = $galones, 
+          @kmVehiculo = $kmVehiculo,
+          @totalVale = $totalVale, 
+          @status = @insertStatus OUTPUT;
+      SELECT @insertStatus AS Status;''';
+    var res = await SqlConn.writeData(query);
+    debugPrint(res.toString());
+  }
 }

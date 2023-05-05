@@ -1,5 +1,7 @@
+import 'package:conexion/data/providers/database_manager_provider.dart';
 import 'package:conexion/ui/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CombustiblePage extends StatefulWidget {
   const CombustiblePage({super.key});
@@ -7,6 +9,12 @@ class CombustiblePage extends StatefulWidget {
   @override
   State<CombustiblePage> createState() => _CombustiblePageState();
 }
+
+final TextEditingController _numbreValeController = TextEditingController();
+final TextEditingController _galonesController = TextEditingController();
+final TextEditingController _kilometrosController = TextEditingController();
+final TextEditingController _totalController = TextEditingController();
+final TextEditingController _dateController = TextEditingController();
 
 class _CombustiblePageState extends State<CombustiblePage> {
   @override
@@ -23,11 +31,6 @@ class _CombustiblePageState extends State<CombustiblePage> {
 }
 
 class _FormFuelLog extends StatelessWidget {
-  final TextEditingController _numbreValeController = TextEditingController();
-  final TextEditingController _galonesController = TextEditingController();
-  final TextEditingController _kilometrosController = TextEditingController();
-  final TextEditingController _totalController = TextEditingController();
-
   _FormFuelLog({
     super.key,
   });
@@ -46,7 +49,7 @@ class _FormFuelLog extends StatelessWidget {
               controller: _numbreValeController,
             ),
             const SizedBox(height: 15),
-            TextFormFielDate(),
+            TextFormFielDate(dateController: _dateController),
             const SizedBox(height: 15),
             const DropdownCombustible(),
             const SizedBox(height: 15),
@@ -65,7 +68,7 @@ class _FormFuelLog extends StatelessWidget {
               controller: _totalController,
             ),
             const SizedBox(height: 40),
-            const _SaveButton()
+            _SaveButton()
           ],
         ),
       ),
@@ -74,14 +77,23 @@ class _FormFuelLog extends StatelessWidget {
 }
 
 class _SaveButton extends StatelessWidget {
-  const _SaveButton({
+  _SaveButton({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () async {
+        await Provider.of<DatabaseManagerProvider>(context, listen: false)
+            .ingresarRegistroCombustible(
+          _numbreValeController.text,
+          _dateController.text,
+          _galonesController.text,
+          _kilometrosController.text,
+          _totalController.text,
+        );
+      },
       child: const Text(
         'Guardar Registro',
         style: TextStyle(fontSize: 18),

@@ -97,9 +97,8 @@ class TextFormFieldText extends StatelessWidget {
 }
 
 class TextFormFielDate extends StatelessWidget {
-  TextFormFielDate({super.key});
-
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController dateController;
+  TextFormFielDate({super.key, required this.dateController});
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +107,7 @@ class TextFormFielDate extends StatelessWidget {
       child: Consumer<UIProvider>(
         builder: (context, ui, child) {
           return TextFormField(
-            controller: _dateController,
+            controller: dateController,
             decoration: InputDecoration(
               labelText: 'Selecciona una fecha',
               suffixIcon: IconButton(
@@ -136,7 +135,7 @@ class TextFormFielDate extends StatelessWidget {
         lastDate: DateTime(2101));
     if (picked != null && picked != ui.selectedDate) {
       debugPrint(picked.toString());
-      _dateController.text = "${picked.day}/${picked.month}/${picked.year}";
+      dateController.text = "${picked.day}/${picked.month}/${picked.year}";
       ui.setSelectedDate(picked);
     }
   }
@@ -154,7 +153,7 @@ class DropdownVehicle extends StatelessWidget {
         items: _buildDrawerItems(db.vehicle),
         value: db.valueVehicle,
         onChanged: (value) {
-          debugPrint(value);
+          db.valueVehicle = value;
         },
         decoration: const InputDecoration(
           labelText: 'Vehiculo',
@@ -204,7 +203,7 @@ class DropdownCombustible extends StatelessWidget {
         items: _buildDrawerItems(db.combustible),
         value: db.valueCombustible,
         onChanged: (value) {
-          debugPrint(value);
+          db.valueCombustible = value;
         },
         decoration: const InputDecoration(
           labelText: 'Tipo de combustible',
