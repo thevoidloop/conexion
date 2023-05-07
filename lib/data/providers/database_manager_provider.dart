@@ -9,7 +9,7 @@ import 'package:sql_conn/sql_conn.dart';
 class DatabaseManagerProvider extends ChangeNotifier {
   bool connection = false;
   late int _id;
-  String _ip = '10.10.11.5';
+  String _ip = '192.168.0.5';
   final String _port = '1433';
   final String _databasename = 'proyect';
   final String _username = 'admin';

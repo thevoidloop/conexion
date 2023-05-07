@@ -3,20 +3,9 @@ import 'package:conexion/ui/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CombustiblePage extends StatefulWidget {
+class CombustiblePage extends StatelessWidget {
   const CombustiblePage({super.key});
 
-  @override
-  State<CombustiblePage> createState() => _CombustiblePageState();
-}
-
-final TextEditingController _numbreValeController = TextEditingController();
-final TextEditingController _galonesController = TextEditingController();
-final TextEditingController _kilometrosController = TextEditingController();
-final TextEditingController _totalController = TextEditingController();
-final TextEditingController _dateController = TextEditingController();
-
-class _CombustiblePageState extends State<CombustiblePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +18,12 @@ class _CombustiblePageState extends State<CombustiblePage> {
     );
   }
 }
+
+final TextEditingController _numbreValeController = TextEditingController();
+final TextEditingController _galonesController = TextEditingController();
+final TextEditingController _kilometrosController = TextEditingController();
+final TextEditingController _totalController = TextEditingController();
+final TextEditingController _dateController = TextEditingController();
 
 class _FormFuelLog extends StatelessWidget {
   _FormFuelLog({
