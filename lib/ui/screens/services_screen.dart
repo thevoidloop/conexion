@@ -1,4 +1,7 @@
+import 'package:conexion/data/providers/database_manager_provider.dart';
+import 'package:conexion/ui/widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ServiciosPage extends StatelessWidget {
   const ServiciosPage({super.key});
@@ -9,12 +12,19 @@ class ServiciosPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Registro de Servicios'),
       ),
-      body: SingleChildScrollView(
+      body: const SingleChildScrollView(
         child: _FormServicesLog(),
       ),
     );
   }
 }
+
+final TextEditingController _numbreValeController = TextEditingController();
+final TextEditingController _descripcionController = TextEditingController();
+final TextEditingController _observacionesController = TextEditingController();
+final TextEditingController _kilometrosController = TextEditingController();
+final TextEditingController _totalController = TextEditingController();
+final TextEditingController _dateController = TextEditingController();
 
 class _FormServicesLog extends StatelessWidget {
   const _FormServicesLog({
@@ -27,8 +37,47 @@ class _FormServicesLog extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(15),
         child: Column(
-          children: [],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            DropdownVehicle(),
+            TextFormFielDate(dateController: _dateController),
+            //OpcionesMante(),
+            Container(
+              height: 125,
+              child: TextFormFieldText(
+                  mensaje: 'Descripcion del mantenimiento realizado',
+                  controller: _descripcionController),
+            ),
+            DropdownTypeMant(),
+            Padding(padding: const EdgeInsets.all(40), child: _SaveButton())
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _SaveButton extends StatelessWidget {
+  _SaveButton({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        // await Provider.of<DatabaseManagerProvider>(context, listen: false)
+        // .ingresarRegistroCombustible(
+        // _numbreValeController.text,
+        // _dateController.text,
+        // _galonesController.text,
+        // _kilometrosController.text,
+        // _totalController.text,
+        // );
+      },
+      child: const Text(
+        'Guardar Registro',
+        style: TextStyle(fontSize: 18),
       ),
     );
   }

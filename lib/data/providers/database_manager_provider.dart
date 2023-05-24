@@ -1,36 +1,47 @@
 import 'dart:convert';
 import 'package:conexion/app/routes/routes.dart';
-import 'package:conexion/data/models/combustible_model.dart';
-import 'package:conexion/data/models/option_model.dart';
-import 'package:conexion/data/models/vehicle_model.dart';
+import 'package:conexion/data/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_conn/sql_conn.dart';
 
 class DatabaseManagerProvider extends ChangeNotifier {
   bool connection = false;
   late int _id;
-  String _ip = '192.168.0.5';
+  String _ip = '10.10.11.5';
   final String _port = '1433';
   final String _databasename = 'proyect';
   final String _username = 'admin';
   final String _password = '123456789';
   String _valueVehicle = "Seleccione una opcion";
   String _valueCombustible = "Seleccione una opcion";
+  String _valueTypeMan = "Seleccione una opcion";
+
   late List<Option> _options;
   late List<Vehicle> _vehicle;
+  late List<TypeMan> _typeMan;
+
   late List<Combustible> _combustible;
 
   String get valueCombustible => _valueCombustible;
   List<Combustible> get combustible => _combustible;
   List<Option> get options => _options;
   List<Vehicle> get vehicle => _vehicle;
+  List<TypeMan> get typeMan => _typeMan;
   String get ip => _ip;
   String get valueVehicle => _valueVehicle;
+  String get valueTypeMan => _valueTypeMan;
 
   set valueCombustible(String value) => _valueCombustible = value;
   set ip(String val) => _ip = val;
   set valueVehicle(String val) => _valueVehicle = val;
   set combustible(List<Combustible> value) => _combustible = value;
+  set typeMan(List<TypeMan> value) => _typeMan = value;
+  set valueTypeMan(String value) => _valueTypeMan = value;
+
+  defaultSettings() {
+    valueVehicle = 'Seleccione una opcion';
+    valueCombustible = 'Seleccione una opcion';
+  }
 
   Future<void> connect() async {
     debugPrint("Connecting...");
@@ -73,6 +84,7 @@ class DatabaseManagerProvider extends ChangeNotifier {
       await getOptionsByUserId();
       await getVehicle();
       await getCombustible();
+      await getTypeMan();
       await agregarInicioSesion(_id);
       Navigator.pushReplacementNamed(context, AppRoutes.home);
       debugPrint(_id.toString());
@@ -98,6 +110,12 @@ class DatabaseManagerProvider extends ChangeNotifier {
     var res = await SqlConn.readData('SELECT * FROM tbVehicle');
     List<dynamic> vehiclesMapList = json.decode(res.toString());
     _vehicle = vehiclesMapList.map((map) => Vehicle.fromMap(map)).toList();
+  }
+
+  Future<void> getTypeMan() async {
+    var res = await SqlConn.readData('SELECT * FROM tbTipoMan');
+    List<dynamic> jsonResponse = json.decode(res.toString());
+    _typeMan = jsonResponse.map((map) => TypeMan.fromJson(map)).toList();
   }
 
   Future<void> agregarInicioSesion(int idUser) async {

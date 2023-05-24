@@ -1,4 +1,5 @@
 import 'package:conexion/data/models/combustible_model.dart';
+import 'package:conexion/data/models/models.dart';
 import 'package:conexion/data/models/vehicle_model.dart';
 import 'package:conexion/data/providers/database_manager_provider.dart';
 import 'package:conexion/data/providers/ui_provider.dart';
@@ -90,8 +91,14 @@ class TextFormFieldText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration: InputDecoration(labelText: mensaje),
+      decoration: InputDecoration(
+        labelText: mensaje,
+        floatingLabelAlignment: FloatingLabelAlignment.start,
+      ),
       keyboardType: TextInputType.text,
+      expands: true,
+      maxLines: null,
+      minLines: null,
     );
   }
 }
@@ -181,6 +188,56 @@ class DropdownVehicle extends StatelessWidget {
           value: item.idVehicle.toString(),
           child: Text(
             "${item.marca} ${item.modelo} - ${item.placa}",
+            style: const TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownTypeMant extends StatelessWidget {
+  const DropdownTypeMant({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, _) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(db.typeMan),
+        value: db.valueTypeMan,
+        onChanged: (value) {
+          db.valueTypeMan = value;
+        },
+        decoration: const InputDecoration(
+          labelText: 'Tipo de Mantenimiento',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems(List<TypeMan> drawerItems) {
+    List<DropdownMenuItem> items = [];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 'Seleccione una opcion',
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 18),
+        ),
+      ),
+    );
+
+    for (var item in drawerItems) {
+      items.add(
+        DropdownMenuItem(
+          value: item.idType.toString(),
+          child: Text(
+            item.type,
             style: const TextStyle(fontSize: 18),
           ),
         ),
