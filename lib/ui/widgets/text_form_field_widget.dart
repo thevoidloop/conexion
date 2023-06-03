@@ -91,6 +91,7 @@ class TextFormFieldText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      controller: controller,
       decoration: InputDecoration(
         labelText: mensaje,
         floatingLabelAlignment: FloatingLabelAlignment.start,
@@ -289,6 +290,230 @@ class DropdownCombustible extends StatelessWidget {
           child: Text(
             item.nombre,
             style: const TextStyle(fontSize: 18),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownYear extends StatelessWidget {
+  const DropdownYear({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, _) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(),
+        value: db.year,
+        onChanged: (value) {
+          db.year = value;
+          db.getDataMes();
+        },
+        decoration: const InputDecoration(
+          labelText: 'Año',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems() {
+    List<DropdownMenuItem> items = [];
+    List<String> year = [
+      '2020',
+      '2021',
+      '2022',
+      '2023',
+      '2024',
+      '2025',
+    ];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 0,
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+
+    for (var item in year) {
+      items.add(
+        DropdownMenuItem(
+          value: int.parse(item),
+          child: Text(
+            item,
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownSemester extends StatelessWidget {
+  const DropdownSemester({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, _) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(),
+        value: db.semester,
+        onChanged: (value) {
+          db.semester = value;
+          db.getDataMes();
+        },
+        decoration: const InputDecoration(
+          labelText: 'Semestre',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems() {
+    List<DropdownMenuItem> items = [];
+    List<String> semester = [
+      '1',
+      '2',
+    ];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 0,
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+
+    for (var item in semester) {
+      items.add(
+        DropdownMenuItem(
+          value: int.parse(item),
+          child: Text(
+            item,
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownVehicleData extends StatelessWidget {
+  const DropdownVehicleData({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, child) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(db.vehicle),
+        value: db.dataVehicle,
+        onChanged: (value) {
+          db.dataVehicle = value;
+          db.getDataPie();
+        },
+        decoration: const InputDecoration(
+          labelText: 'Vehiculo',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems(List<Vehicle> drawerItems) {
+    List<DropdownMenuItem> items = [];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 0,
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+
+    for (var item in drawerItems) {
+      items.add(
+        DropdownMenuItem(
+          value: item.idVehicle.toString(),
+          child: Text(
+            "${item.marca} ${item.modelo} - ${item.placa}",
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+      );
+    }
+
+    return items;
+  }
+}
+
+class DropdownYearPie extends StatelessWidget {
+  const DropdownYearPie({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<DatabaseManagerProvider>(builder: (context, db, _) {
+      return DropdownButtonFormField(
+        items: _buildDrawerItems(),
+        value: db.yearPie,
+        onChanged: (value) {
+          db.yearPie = value;
+          db.getDataPie();
+        },
+        decoration: const InputDecoration(
+          labelText: 'Año',
+        ),
+      );
+    });
+  }
+
+  List<DropdownMenuItem> _buildDrawerItems() {
+    List<DropdownMenuItem> items = [];
+    List<String> year = [
+      '2020',
+      '2021',
+      '2022',
+      '2023',
+      '2024',
+      '2025',
+    ];
+
+    items.add(
+      const DropdownMenuItem(
+        value: 0,
+        child: Text(
+          "Seleccione una opcion",
+          style: TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+
+    for (var item in year) {
+      items.add(
+        DropdownMenuItem(
+          value: int.parse(item),
+          child: Text(
+            item,
+            style: const TextStyle(fontSize: 12),
           ),
         ),
       );

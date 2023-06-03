@@ -19,11 +19,7 @@ class ServiciosPage extends StatelessWidget {
   }
 }
 
-final TextEditingController _numbreValeController = TextEditingController();
 final TextEditingController _descripcionController = TextEditingController();
-final TextEditingController _observacionesController = TextEditingController();
-final TextEditingController _kilometrosController = TextEditingController();
-final TextEditingController _totalController = TextEditingController();
 final TextEditingController _dateController = TextEditingController();
 
 class _FormServicesLog extends StatelessWidget {
@@ -43,10 +39,11 @@ class _FormServicesLog extends StatelessWidget {
             TextFormFielDate(dateController: _dateController),
             //OpcionesMante(),
             Container(
-              height: 125,
+              height: 75,
               child: TextFormFieldText(
-                  mensaje: 'Descripcion del mantenimiento realizado',
-                  controller: _descripcionController),
+                mensaje: 'Descripcion del mantenimiento realizado',
+                controller: _descripcionController,
+              ),
             ),
             DropdownTypeMant(),
             Padding(padding: const EdgeInsets.all(40), child: _SaveButton())
@@ -66,14 +63,11 @@ class _SaveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        // await Provider.of<DatabaseManagerProvider>(context, listen: false)
-        // .ingresarRegistroCombustible(
-        // _numbreValeController.text,
-        // _dateController.text,
-        // _galonesController.text,
-        // _kilometrosController.text,
-        // _totalController.text,
-        // );
+        await Provider.of<DatabaseManagerProvider>(context, listen: false)
+            .ingresarRegistroServicio(
+          _dateController.text,
+          _descripcionController.text,
+        );
       },
       child: const Text(
         'Guardar Registro',

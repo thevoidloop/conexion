@@ -12,15 +12,13 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => DatabaseManagerProvider(),
         ),
-      ], 
-        child: MaterialApp(
-          initialRoute: AppRoutes.login,
-          routes: getRoutes(),
-          theme: getAppTheme(),
-          debugShowCheckedModeBanner: false,
-        ),
+      ],
+      child: MaterialApp(
+        initialRoute: AppRoutes.login,
+        routes: getRoutes(),
+        theme: getAppTheme(),
+        debugShowCheckedModeBanner: false,
       ),
-    );
+    ),
+  );
 }
-
-

@@ -7,6 +7,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String combustible = 'Combustibles';
   static const String servicios = 'Servicios';
+  static const String dashboard = 'Dashboard';
   static const String setting = '/setting';
 }
 
@@ -17,5 +18,6 @@ Map<String, WidgetBuilder> getRoutes() {
     AppRoutes.combustible: (BuildContext context) => CombustiblePage(),
     AppRoutes.setting: (BuildContext context) => SettingDBScreen(),
     AppRoutes.servicios: (BuildContext context) => ServiciosPage(),
+    AppRoutes.dashboard: (BuildContext context) => DashboardScreen(),
   };
 }

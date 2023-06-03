@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:conexion/app/routes/routes.dart';
+import 'package:conexion/data/models/data_combustible_chart_model.dart';
 import 'package:conexion/data/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:sql_conn/sql_conn.dart';
@@ -7,29 +8,43 @@ import 'package:sql_conn/sql_conn.dart';
 class DatabaseManagerProvider extends ChangeNotifier {
   bool connection = false;
   late int _id;
+  int _year = 0;
+  int _semester = 0;
+  int _yearPie = 0;
+
   String _ip = '10.10.11.5';
   final String _port = '1433';
   final String _databasename = 'proyect';
   final String _username = 'admin';
   final String _password = '123456789';
   String _valueVehicle = "Seleccione una opcion";
+  String _dataVehicle = "0";
+
   String _valueCombustible = "Seleccione una opcion";
   String _valueTypeMan = "Seleccione una opcion";
 
   late List<Option> _options;
   late List<Vehicle> _vehicle;
   late List<TypeMan> _typeMan;
+  late List<DataCombustibleMes> _dataCombustibleMes;
+  late List<DataPieModel> _dataPie;
 
   late List<Combustible> _combustible;
 
+  int get yearPie => _yearPie;
+  String get dataVehicle => _dataVehicle;
   String get valueCombustible => _valueCombustible;
   List<Combustible> get combustible => _combustible;
   List<Option> get options => _options;
   List<Vehicle> get vehicle => _vehicle;
   List<TypeMan> get typeMan => _typeMan;
+  List<DataCombustibleMes> get dataCombustibleMes => _dataCombustibleMes;
+  List<DataPieModel> get dataPie => _dataPie;
   String get ip => _ip;
   String get valueVehicle => _valueVehicle;
   String get valueTypeMan => _valueTypeMan;
+  int get year => _year;
+  int get semester => _semester;
 
   set valueCombustible(String value) => _valueCombustible = value;
   set ip(String val) => _ip = val;
@@ -37,6 +52,13 @@ class DatabaseManagerProvider extends ChangeNotifier {
   set combustible(List<Combustible> value) => _combustible = value;
   set typeMan(List<TypeMan> value) => _typeMan = value;
   set valueTypeMan(String value) => _valueTypeMan = value;
+  set dataCombustibleMes(List<DataCombustibleMes> value) =>
+      _dataCombustibleMes = value;
+  set year(int value) => _year = value;
+  set semester(int value) => _semester = value;
+  set dataPie(List<DataPieModel> value) => _dataPie = value;
+  set dataVehicle(String value) => _dataVehicle = value;
+  set yearPie(int value) => _yearPie = value;
 
   defaultSettings() {
     valueVehicle = 'Seleccione una opcion';
@@ -85,7 +107,9 @@ class DatabaseManagerProvider extends ChangeNotifier {
       await getVehicle();
       await getCombustible();
       await getTypeMan();
+      await getDataMes();
       await agregarInicioSesion(_id);
+      await getDataPie();
       Navigator.pushReplacementNamed(context, AppRoutes.home);
       debugPrint(_id.toString());
     } else {
@@ -152,5 +176,40 @@ class DatabaseManagerProvider extends ChangeNotifier {
       SELECT @insertStatus AS Status;''';
     var res = await SqlConn.writeData(query);
     debugPrint(res.toString());
+  }
+
+  Future<void> ingresarRegistroServicio(
+    String fecha,
+    String descripcion,
+  ) async {
+    String query = '''DECLARE @insertStatus NVARCHAR(250);
+      EXEC AgregarRegistroServicio
+          @idUsuario = $_id,
+          @idVehiculo = $_valueVehicle,
+          @fecha = '$fecha',
+          @descripcion = '$descripcion',
+          @idTipoMan = $valueTypeMan, 
+          @status = @insertStatus OUTPUT;
+      SELECT @insertStatus AS Status;''';
+    var res = await SqlConn.writeData(query);
+    debugPrint(res.toString());
+  }
+
+  Future<void> getDataMes() async {
+    var res = await SqlConn.readData(
+        'EXEC spCombustiblePorMes @Ano = $year, @Semestre = $semester');
+    List<dynamic> jsonResponse = json.decode(res.toString());
+    _dataCombustibleMes =
+        jsonResponse.map((map) => DataCombustibleMes.fromJson(map)).toList();
+    notifyListeners();
+  }
+
+  Future<void> getDataPie() async {
+    var res = await SqlConn.readData(
+        'EXEC GetMantenimientoGrafica @vehiculoId = $dataVehicle, @year = $yearPie;');
+    List<dynamic> jsonResponse = json.decode(res.toString());
+    _dataPie = jsonResponse.map((map) => DataPieModel.fromJson(map)).toList();
+    debugPrint(res.toString());
+    notifyListeners();
   }
 }
